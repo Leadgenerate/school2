@@ -158,5 +158,6 @@ for event in longpoll.listen():
              vopros += '\n ' + response
              send_message(vk_session, 'user_id', event.user_id, message='Спасибо за вопрос.\n Мы ответим в ближайшее время.')
              send_message(vk_session, 'user_id',183736062 , message=vopros)
+             vopros = 'Вопрос в сообщениях:'
              a=3
              break
