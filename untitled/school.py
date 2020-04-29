@@ -1,9 +1,7 @@
 import sys
 from time import timezone
 
-from PIL import ImageFont
-from PIL import Image
-from PIL import ImageDraw
+
 from datetime import datetime, date, time
 from vk_api.longpoll import VkLongPoll, VkEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
