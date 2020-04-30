@@ -156,8 +156,9 @@ for event in longpoll.listen():
           response = event.text.lower()
           if event.from_user and not (event.from_me):
              vopros += '\n ' + response
+             keyboard = create_keyboard('u')
              send_message(vk_session, 'user_id', event.user_id, message='Спасибо за вопрос.\n Мы ответим в ближайшее время.')
-             send_message(vk_session, 'user_id',183736062 , message=vopros)
+             send_message(vk_session, 'user_id',183736062 , message=vopros, keyboard=keyboard)
              vopros = 'Вопрос в сообщениях:'
              a=3
              break
