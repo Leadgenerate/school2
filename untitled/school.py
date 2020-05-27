@@ -1,55 +1,47 @@
 import sys
 from time import timezone
 
-
 from datetime import datetime, date, time
-from vk_api.longpoll import VkLongPoll, VkEventType
+from vk_api.bot_longpoll import VkBotLongPoll, VkBotEventType
 from vk_api.keyboard import VkKeyboard, VkKeyboardColor
 import vk_api
 from datetime import datetime, timedelta
 from datetime import time
 import random
 
-token = "5a9d9af0a94f9c7e9551de8bb9322799ca4be14e13267b30c0000ebf046d0f23946c89c4cd8855fb96ec3"
+token = "3cbadf7754a4e2beaa1bd0ef9b6a9eb94d216f1bcba27ecd922aef1d7015a3707297271e9a403ed517531"
 vk_session = vk_api.VkApi(token=token)
 
 session_api = vk_session.get_api()
 
-longpoll = VkLongPoll(vk_session)
+longpoll = VkBotLongPoll(vk_session,192117978)
 
+#бля, создам ещё 1 версию чтобы всё на bot_longpoll было
 
-
-def send_message(vk_session, id_type, id, message=None, attachment=None, keyboard=None):
-    vk_session.method('messages.send',{id_type: id, 'message': message, 'random_id': random.randint(-2147483648, +2147483648), "attachment": attachment, 'keyboard': keyboard})
+def send_message(vk_session, id, message=None, attachment=None, keyboard=None):
+    vk_session.method('messages.send',{'peer_id': id, 'message': message, 'random_id': random.randint(-2147483648, +2147483648), "attachment": attachment, 'keyboard': keyboard})
 
 
 
 def create_keyboard(response):
-     keyboard = VkKeyboard(one_time=False)
-     response = event.text.lower()
-     if event.from_user and not (event.from_me):
+    keyboard = VkKeyboard(one_time=False)
+    if response == 'здравствуйте':
+        keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
 
-           if response == 'здравствуйте':
-                keyboard.add_button('Расписание', color=VkKeyboardColor.PRIMARY)
+        keyboard.add_line()  # Переход на вторую строку
+        keyboard.add_button('Какой сейчас урок?', color=VkKeyboardColor.POSITIVE)
 
-                keyboard.add_line()  # Переход на вторую строку
-                keyboard.add_button('Какой сейчас урок?', color=VkKeyboardColor.POSITIVE)
+        keyboard.add_line()
+        keyboard.add_button('Хочу задать вопрос', color=VkKeyboardColor.PRIMARY)
 
-                keyboard.add_line()
-                keyboard.add_button('Хочу задать вопрос', color=VkKeyboardColor.PRIMARY)
+        keyboard = keyboard.get_keyboard()
+        return keyboard
 
-                keyboard = keyboard.get_keyboard()
-                return keyboard
-
-def create_keyboard2(response):
-     keyboard = VkKeyboard(one_time=False)
-     response = event.text.lower()
-     if event.from_user and not (event.from_me):
-        if event.type == VkEventType.MESSAGE_NEW:
-            keyboard.add_button('Здравствуйте', color=VkKeyboardColor.PRIMARY)
-
-            keyboard = keyboard.get_keyboard()
-            return keyboard
+def create_keyboard2():
+    keyboard = VkKeyboard(one_time=False)
+    keyboard.add_button('Здравствуйте', color=VkKeyboardColor.PRIMARY)
+    keyboard = keyboard.get_keyboard()
+    return keyboard
 
 now = datetime.now()  # получаем текущую дату и время
 min_time = time(00, 00)  # от какого времени будет что-то работать
@@ -70,95 +62,84 @@ zan72 = time(15, 35)
 max_time = time(17, 00)  # до какого времени будет что-то работать
 
 a = 1
-
+users = {}
 vopros = 'Вопрос в Сообщениях:'
 
-for event in longpoll.listen():
-   if event.type == VkEventType.MESSAGE_NEW and not (a>1):
-        print('Сообщение пришло в: ' + str(datetime.strftime(datetime.now(), "%H:%M:%S")))
-        print('Текст сообщения: ' + str(event.text))
-        print('Ссылка на пользователя: vk.com/id'+str(event.user_id))
-        full_name = session_api.users.get(user_ids = event.peer_id)
-        priv = 'Здравствуйте, ' + full_name[0]['first_name']
-        response = event.text.lower()
-        keyboard = create_keyboard2(response)
 
-        if event.from_user and not (event.from_me):
-          send_message(vk_session, 'user_id', event.user_id, message=priv, keyboard=keyboard)
-          a+= 1
-          break
-
-
-for event in longpoll.listen():
-    if event.type == VkEventType.MESSAGE_NEW and (a == 2):
-        print('Сообщение пришло в: ' + str(datetime.strftime(datetime.now(), "%H:%M:%S")))
-        print('Текст сообщения: ' + str(event.text))
-        print('Ссылка на пользователя: vk.com/id'+str(event.user_id))
-        response = event.text.lower()
-        keyboard = create_keyboard(response)
-        if event.from_user and not (event.from_me):
-          send_message(vk_session, 'user_id', event.user_id, message='Что Вы хотите узнать?', keyboard=keyboard)
-          a+= 1
-          break
-
-
-for event in longpoll.listen():
- if event.type == VkEventType.MESSAGE_NEW and (a == 3):
-    print('Сообщение пришло в: ' + str(datetime.strftime(datetime.now(), "%H:%M:%S")))
-    print('Текст сообщения: ' + str(event.text))
-    print('Ссылка на пользователя: vk.com/id'+str(event.user_id))
-    response = event.text.lower()
-    if event.from_user and not (event.from_me):
-      response = event.text.lower()
-      if response == 'расписание':
-          attachment = f'photo-194565853_457239018'
-          send_message(vk_session, 'user_id', event.user_id, attachment= attachment)
-
-
-      elif response == 'какой сейчас урок?':
-             if now.time()>min_time and now.time()<zan11:
-               send_message(vk_session, 'user_id', event.user_id, message='Занятия еще не начались')
-             elif now.time()>max_time:
-                 send_message(vk_session, 'user_id', event.user_id, message='Занятий нет')
-             elif now.time()>zan11 and now.time()<zan12:
-                 send_message(vk_session, 'user_id', event.user_id, message='Идет 1 урок')
-             elif now.time()>zan21 and now.time()<zan22:
-                  send_message(vk_session, 'user_id', event.user_id, message='Идет 2 урок')
-             elif now.time()>zan31 and now.time()<zan32:
-                   send_message(vk_session, 'user_id', event.user_id, message='Идет 3 урок')
-             elif now.time()>zan41 and now.time()<zan42:
-                    send_message(vk_session, 'user_id', event.user_id, message='Идет 4 урок')
-             elif now.time()>zan51 and now.time()<zan52:
-                     send_message(vk_session, 'user_id', event.user_id, message='Идет 5 урок')
-             elif now.time()>zan61 and now.time()<zan62:
-                      send_message(vk_session, 'user_id', event.user_id, message='Идет 6 урок')
-             elif now.time()>zan71 and now.time()<zan72:
-                       send_message(vk_session, 'user_id', event.user_id, message='Идет 7 урок')
-             elif (now.time()>zan12 and now.time()<zan21) or \
-                           (now.time()>zan22 and now.time()<zan31) or \
-                           (now.time()>zan32 and now.time()<zan41) or \
-                           (now.time()>zan42 and now.time()<zan51) or \
-                           (now.time()>zan52 and now.time()<zan61) or \
-                           (now.time()>zan62 and now.time()<zan71):
-                              send_message(vk_session, 'user_id', event.user_id, message='Сейчас перемена')
-                              a=3
-
-      elif response == 'хочу задать вопрос':
-        send_message(vk_session, 'user_id', event.user_id, message='Напишите свой вопрос')
-        print('Сообщение пришло в: ' + str(datetime.strftime(datetime.now(), "%H:%M:%S")))
-        print('Текст сообщения: ' + str(event.text))
-        print('Ссылка на пользователя: vk.com/id'+str(event.user_id))
+while True:
+    try:
         for event in longpoll.listen():
-         if event.type == VkEventType.MESSAGE_NEW:
-          print('Сообщение пришло в: ' + str(datetime.strftime(datetime.now(), "%H:%M:%S")))
-          print('Текст сообщения: ' + str(event.text))
-          print('Ссылка на пользователя: vk.com/id'+str(event.user_id))
-          response = event.text.lower()
-          if event.from_user and not (event.from_me):
-             vopros += '\n ' + response
-             keyboard = create_keyboard('u')
-             send_message(vk_session, 'user_id', event.user_id, message='Спасибо за вопрос.\n Мы ответим в ближайшее время.')
-             send_message(vk_session, 'user_id',183736062 , message=vopros, keyboard=keyboard)
-             vopros = 'Вопрос в сообщениях:'
-             a=3
-             break
+            if event.type == VkBotEventType.MESSAGE_NEW:
+                #print(event.obj)
+                user_id = event.obj.from_id
+                if users.get(user_id)==None:
+                    users[user_id] = a
+
+                full_name = session_api.users.get(user_ids = event.obj.peer_id)
+                priv = 'Здравствуйте, ' + full_name[0]['first_name']
+                response = event.obj.text.lower()
+
+
+                if response== 'здравствуйте':
+                    keyboard = create_keyboard(response)
+                    send_message(vk_session,event.obj.peer_id, message=priv, keyboard=keyboard)
+                    users[user_id] = 2
+
+                if users[user_id] == 2:
+                    keyboard = create_keyboard(response)
+                    if not event.obj.from_group:
+                        send_message(vk_session, event.obj.peer_id, message='Что Вы хотите узнать?', keyboard=keyboard)
+                        users[user_id] = 3
+                elif users[user_id] == 3 or users[user_id] == 10:
+                    if not event.obj.from_group:
+                        print(users[user_id])
+                        if response == 'расписание':
+                            attachment = f'photo-194565853_457239018'
+                            send_message(vk_session,event.obj.peer_id, attachment= attachment)
+                        elif response == 'какой сейчас урок?':
+                             if now.time()>min_time and now.time()<zan11:
+                                 send_message(vk_session, event.obj.peer_id, message='Занятия еще не начались')
+                             elif now.time()>max_time:
+                                 send_message(vk_session, event.obj.peer_id, message='Занятий нет')
+                             elif now.time()>zan11 and now.time()<zan12:
+                                 send_message(vk_session, event.obj.peer_id, message='Идет 1 урок')
+                             elif now.time()>zan21 and now.time()<zan22:
+                                  send_message(vk_session, event.obj.peer_id, message='Идет 2 урок')
+                             elif now.time()>zan31 and now.time()<zan32:
+                                    send_message(vk_session, event.obj.peer_id, message='Идет 3 урок')
+                             elif now.time()>zan41 and now.time()<zan42:
+                                    send_message(vk_session, event.obj.peer_id, message='Идет 4 урок')
+                             elif now.time()>zan51 and now.time()<zan52:
+                                     send_message(vk_session, event.obj.peer_id, message='Идет 5 урок')
+                             elif now.time()>zan61 and now.time()<zan62:
+                                      send_message(vk_session, event.obj.peer_id, message='Идет 6 урок')
+                             elif now.time()>zan71 and now.time()<zan72:
+                                       send_message(vk_session, event.obj.peer_id, message='Идет 7 урок')
+                             elif (now.time()>zan12 and now.time()<zan21) or \
+                                           (now.time()>zan22 and now.time()<zan31) or \
+                                           (now.time()>zan32 and now.time()<zan41) or \
+                                           (now.time()>zan42 and now.time()<zan51) or \
+                                           (now.time()>zan52 and now.time()<zan61) or \
+                                           (now.time()>zan62 and now.time()<zan71):
+                                            send_message(vk_session, event.obj.peer_id, message='Сейчас перемена')
+                        elif response == 'хочу задать вопрос':
+                            send_message(vk_session, event.obj.peer_id, message='Напишите свой вопрос', keyboard=None)
+                            print(user_id,users[user_id])
+                            users[user_id] = 10
+
+                        elif users[user_id] == 10:
+                             vopros += '\n ' + response
+                             keyboard = create_keyboard('u')
+                             send_message(vk_session, event.obj.peer_id, message='Спасибо за вопрос.\n Мы ответим в ближайшее время.')
+                             users[user_id] = 3
+                             send_message(vk_session, 183736062 , message=vopros, keyboard=keyboard)
+
+                             vopros = 'Вопрос в сообщениях:'
+                else:
+                    if not event.obj.from_group:
+                        keyboard = create_keyboard2()
+
+                        send_message(vk_session, event.obj.peer_id, message=priv, keyboard=keyboard)
+
+        #версия с одним циклом
+    except: pass
