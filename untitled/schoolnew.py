@@ -82,7 +82,6 @@ while True:
 
                 if response== 'здравствуйте':
                     keyboard = create_keyboard(response)
-                    send_message(vk_session,event.obj.peer_id, message=priv, keyboard=keyboard)
                     users[user_id] = 2
 
                 if users[user_id] == 2:
