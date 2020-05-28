@@ -43,7 +43,7 @@ def create_keyboard2():
     keyboard = keyboard.get_keyboard()
     return keyboard
 
-now = datetime.now() + timedelta(hours=3)  # получаем текущую дату и время
+  # получаем текущую дату и время
 min_time = time(00, 00)  # от какого времени будет что-то работать
 zan11 = time(9, 00)
 zan12 = time(9, 45)
@@ -71,6 +71,7 @@ while True:
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 #print(event.obj)
+                now = datetime.now()
                 user_id = event.obj.from_id
                 if users.get(user_id)==None:
                     users[user_id] = a
