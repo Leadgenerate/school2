@@ -97,6 +97,7 @@ while True:
                             attachment = f'photo-194565853_457239018'
                             send_message(vk_session,event.obj.peer_id, attachment= attachment)
                         elif response == 'какой сейчас урок?':
+                             print (now)
                              if now.time()>min_time and now.time()<zan11:
                                  send_message(vk_session, event.obj.peer_id, message='Занятия еще не начались')
                              elif now.time()>max_time:
