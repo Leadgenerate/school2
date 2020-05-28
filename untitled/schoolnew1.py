@@ -43,7 +43,7 @@ def create_keyboard2():
     keyboard = keyboard.get_keyboard()
     return keyboard
 
-now = datetime.now() + timedelta(hours=3)  # получаем текущую дату и время
+now = datetime.now()  # получаем текущую дату и время
 min_time = time(00, 00)  # от какого времени будет что-то работать
 zan11 = time(9, 00)
 zan12 = time(9, 45)
