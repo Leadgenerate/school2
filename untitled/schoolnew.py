@@ -71,7 +71,7 @@ while True:
         for event in longpoll.listen():
             if event.type == VkBotEventType.MESSAGE_NEW:
                 #print(event.obj)
-                now = datetime.now()
+                now = datetime.now() + timedelta(hours=3)
                 user_id = event.obj.from_id
                 if users.get(user_id)==None:
                     users[user_id] = a
