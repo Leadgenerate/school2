@@ -9,12 +9,12 @@ from datetime import datetime, timedelta
 from datetime import time
 import random
 
-token = "3cbadf7754a4e2beaa1bd0ef9b6a9eb94d216f1bcba27ecd922aef1d7015a3707297271e9a403ed517531"
+token = "5a9d9af0a94f9c7e9551de8bb9322799ca4be14e13267b30c0000ebf046d0f23946c89c4cd8855fb96ec3"
 vk_session = vk_api.VkApi(token=token)
 
 session_api = vk_session.get_api()
 
-longpoll = VkBotLongPoll(vk_session,192117978)
+longpoll = VkBotLongPoll(vk_session,156639869)
 
 #бля, создам ещё 1 версию чтобы всё на bot_longpoll было
 
