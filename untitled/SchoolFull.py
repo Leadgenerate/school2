@@ -100,8 +100,6 @@ while True:
                              print (now)
                              if now.time()>min_time and now.time()<zan11:
                                  send_message(vk_session, event.obj.peer_id, message='Занятия еще не начались')
-                             elif now.time()>max_time:
-                                 send_message(vk_session, event.obj.peer_id, message='Занятий нет')
                              elif now.time()>zan11 and now.time()<zan12:
                                  send_message(vk_session, event.obj.peer_id, message='Идет 1 урок')
                              elif now.time()>zan21 and now.time()<zan22:
@@ -116,6 +114,8 @@ while True:
                                       send_message(vk_session, event.obj.peer_id, message='Идет 6 урок')
                              elif now.time()>zan71 and now.time()<zan72:
                                        send_message(vk_session, event.obj.peer_id, message='Идет 7 урок')
+                             elif now.time()>zan72 and now.time()<max_time:
+                                        send_message(vk_session, event.obj.peer_id, message='Идут дополнительные занятия')
                              elif (now.time()>zan12 and now.time()<zan21) or \
                                            (now.time()>zan22 and now.time()<zan31) or \
                                            (now.time()>zan32 and now.time()<zan41) or \
@@ -123,6 +123,8 @@ while True:
                                            (now.time()>zan52 and now.time()<zan61) or \
                                            (now.time()>zan62 and now.time()<zan71):
                                             send_message(vk_session, event.obj.peer_id, message='Сейчас перемена')
+                             elif now.time()>max_time:
+                                 send_message(vk_session, event.obj.peer_id, message='Занятий нет')
                         elif response == 'хочу задать вопрос':
                             send_message(vk_session, event.obj.peer_id, message='Напишите свой вопрос', keyboard=None)
                             print(user_id,users[user_id])
